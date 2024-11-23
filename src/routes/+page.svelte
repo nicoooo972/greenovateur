@@ -1,138 +1,139 @@
-<!-- src/routes/+page.svelte -->
 <script lang="ts">
     import { page } from '$app/stores';
+    import TabBar from '$lib/components/TabBar.svelte';
     
-    let isProfileMenuOpen = false;
+    export let data;
+
+    $: favoriteItems = data.favoriteItems;
     
-    const toggleProfileMenu = () => {
-        isProfileMenuOpen = !isProfileMenuOpen;
-    };
+    // Données fictives pour les plus utilisés
+    const mostUsedItems = [
+        {
+            id: 1,
+            name: 'airfryer',
+            type: 'Cuisine',
+            image: '/images/air.avif',
+            usageCount: 15
+        },
+        {
+            id: 2,
+            name: 'scanner',
+            type: 'Bureau',
+            image: '/images/scan.avif',
+            usageCount: 12
+        },
+        {
+            id: 3,
+            name: 'aspirateur',
+            type: 'Entretien',
+            image: '/images/aspirateur.avif',
+            usageCount: 10
+        },
+        {
+            id: 4,
+            name: 'perceuse',
+            type: 'Bricolage',
+            image: '/images/perceuse.jpg',
+            usageCount: 8
+        }
+    ];
 </script>
 
-<div class="min-h-screen bg-white">
-    <!-- Navbar Desktop -->
-    <nav class="hidden md:block fixed top-0 left-0 right-0 bg-white border-b border-slate-200 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="text-xl font-bold text-slate-800">
-                        Logo
-                    </a>
-                </div>
-
-                <!-- Navigation centrale -->
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="px-3 py-2 text-slate-600 hover:text-blue-600">
-                        Accueil
-                    </a>
-                    <a href="/search" class="px-3 py-2 text-slate-600 hover:text-blue-600">
-                        Recherche
-                    </a>
-                    <button class="px-3 py-2 text-slate-600 hover:text-blue-600" aria-label="Ajouter">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                    </button>   
-                    <a href="/messages" class="px-3 py-2 text-slate-600 hover:text-blue-600 relative" aria-label="Messages">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                    </a>
-                </div>
-
-                <!-- Profil Desktop -->
-                <div class="relative">
-                    <button 
-                        on:click={toggleProfileMenu}
-                        class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-50"
-                    >
-                        <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
-                            <span class="text-sm font-medium text-white">
-                                {$page.data.user?.firstName?.[0].toUpperCase() ?? ''}
-                            </span>
-                        </div>
-                        {$page.data.user?.firstName ?? ''} {$page.data.user?.lastName ?? ''}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    {#if isProfileMenuOpen}
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-slate-200">
-                            <a href="/profile" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                                Mon profil
-                            </a>
-                            <a href="/settings" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                                Paramètres
-                            </a>
-                            <hr class="my-1 border-slate-200" />
-                            <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-slate-50">
-                                Déconnexion
-                            </button>
-                        </div>
-                    {/if}
-                </div>
-            </div>
+<div class="px-4 py-2 mb-16 bg-[#F8F9FF]">
+    <!-- Barre de recherche -->
+    <div class="fixed top-0 left-0 right-0 bg-white px-4 py-2 z-10">
+        <div class="relative">
+            <input
+                type="text"
+                placeholder="Search"
+                class="w-full px-4 py-2 bg-gray-100 rounded-full pl-10"
+            />
+            <svg
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+            </svg>
         </div>
-    </nav>
+    </div>
 
-    <!-- Contenu principal -->
-    <main class="flex items-center justify-center min-h-[calc(100vh-64px)] md:pt-16">
-        <div class="p-8">
-            {console.log($page.data)}
-            {#if $page.data.user}
-                <h1 class="text-2xl font-bold">
-                    Bienvenue {$page.data.user.firstName} {$page.data.user.lastName} !
-                </h1>
+    <!-- Stats -->
+    <div class="mt-16 grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-blue-50 p-4 rounded-xl">
+            <div class="text-2xl font-bold">22.5 l</div>
+            <div class="text-sm text-gray-600">Consommation d'eau bleue évitée</div>
+        </div>
+        <div class="bg-green-50 p-4 rounded-xl">
+            <div class="text-2xl font-bold">1.5 kgCO2e</div>
+            <div class="text-sm text-gray-600">Émissions de gaz à effet de serre évitées</div>
+        </div>
+    </div>
+
+    <!-- Appareils favoris -->
+    <div class="mb-6">
+        <h2 class="text-xl font-bold mb-4">Mes appareils favoris</h2>
+        <div class="flex overflow-x-auto space-x-4 no-scrollbar">
+            {#if favoriteItems.length > 0}
+                {#each favoriteItems as item}
+                    <div class="flex-none w-36">
+                        <div class="bg-white rounded-lg shadow-sm">
+                            <img
+                                src={item.image}
+                                alt={item.name}
+                                class="w-full h-32 object-cover rounded-t-lg"
+                            />
+                            <div class="p-2">
+                                <h3 class="text-sm font-normal">{item.name}</h3>
+                            </div>
+                        </div>
+                    </div>
+                {/each}
             {:else}
-                <h1>Veuillez vous connecter</h1>
+                <div class="w-full text-center text-gray-500">
+                    Aucun appareil favori pour le moment
+                </div>
             {/if}
         </div>
-    </main>
+    </div>
 
-    <!-- Tab Bar Mobile -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 md:hidden">
-        <div class="flex justify-between items-center h-16 px-6">
-            <!-- Accueil -->
-            <a href="/" class="flex flex-col items-center text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span class="text-xs mt-1">Accueil</span>
-            </a>
-
-            <!-- Recherche -->
-            <a href="/search" class="flex flex-col items-center text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <span class="text-xs mt-1">Recherche</span>
-            </a>
-
-            <!-- Ajouter -->
-            <a href="/add" class="flex flex-col items-center text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span class="text-xs mt-1">Ajouter</span>
-            </a>
-
-            <!-- Messages -->
-            <a href="/messages" class="flex flex-col items-center text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span class="text-xs mt-1">Messages</span>
-            </a>
-
-            <!-- Profil -->
-            <a href="/profile" class="flex flex-col items-center text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span class="text-xs mt-1">Profil</span>
-            </a>
+    <!-- Les + utilisés -->
+    <div>
+        <h2 class="text-xl font-bold mb-4">Les + utilisés</h2>
+        <div class="flex overflow-x-auto space-x-4 no-scrollbar">
+            {#each mostUsedItems as item}
+                <div class="flex-none w-36">
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <img
+                            src={item.image}
+                            alt={item.name}
+                            class="w-full h-32 object-cover rounded-t-lg"
+                        />
+                        <div class="p-2">
+                            <h3 class="text-sm font-normal">{item.name}</h3>
+                            <p class="text-xs text-gray-500">{item.type}</p>
+                        </div>
+                    </div>
+                </div>
+            {/each}
         </div>
     </div>
 </div>
+
+<style>
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<TabBar />
