@@ -53,6 +53,7 @@ model User {
   createdAt       DateTime  @default(now())
   lastLogin       DateTime?
   isActive        Boolean   @default(true)
+  sessions         Session[]
 
   // Relations
   items           Item[]
@@ -244,4 +245,20 @@ model AdminAction {
   network     Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
 
   @@map("admin_actions")
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    token     String   @unique
+    userId    Int
+    user      User     @relation(fields: [userId], references: [id])
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+}
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
 }
