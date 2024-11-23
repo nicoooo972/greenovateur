@@ -1,5 +1,6 @@
 <script lang="ts">
-	import SearchBar from "../../../components/SearchBar.svelte";
+	import TabBar from "$lib/components/TabBar.svelte";
+import SearchBar from "../../../components/SearchBar.svelte";
 
 
   const categories = ['Catégorie A', 'Catégorie B', 'Catégorie C', 'Catégorie D', 'Catégorie E', 'Catégorie F',]
@@ -16,7 +17,5 @@
       </div>
     {/each}
   </div>
-  <div>
-
-  </div>
+  <TabBar />
 </div>

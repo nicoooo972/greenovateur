@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { Item, User } from "@prisma/client";
+	import TabBar from "$lib/components/TabBar.svelte";
+import type { Item, User } from "@prisma/client";
   const imgSrc = "https://s3-alpha-sig.figma.com/img/3d9c/c43d/c74e0700da624d7f403073a62cb6c4ad?Expires=1733097600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=qIYI80~sDtP4nF1DV6c0mzA7FmJzvFpvy1vfrKkYHKYbtkrvVa2GLiiADbUgLiLcHZkC7UZTraL16~TicLYfMPFKvKfsWlvm1yrmD0WrYQHUCC2ZPfr3J~5~zdPUQbJp-tZ31oO~QD8T0NNd5pclqxML8IP8181Mc97VwsgaBmcOIr3izTZNI8lg-f3-4tIGJdD0jkKKbNXRRpei6khsU7V8TL5RKgrUxzXE7PGpx-zVRyB8OTY~wPCsSxTqssSUHS-skTEgVrMSU2unrjRxTBqTvOYze3nkeo8agybz6KerXFxf8nZUhrCs~ZDtsz8QmoZNCttiOjhs1b6WIb~1ag__" 
   const { data } = $props() as { data: { item: Item, owner: User, items: Item[] }}
   function goBack () {
@@ -56,6 +57,7 @@
         {/each}
     </div>
   </div> -->
+  <TabBar />
 </div>
 <style>
   
