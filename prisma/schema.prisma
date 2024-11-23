@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -86,7 +87,7 @@ model Network {
   // Relations
   creator         User           @relation("Creator", fields: [creatorId], references: [id])
   networkMembers  NetworkMember[]
-  sharedItems     SharedItem[]
+  Items     Item[]
   invitations     Invitation[]
   joinRequests    JoinRequest[]
   messages        Message[]
@@ -127,6 +128,9 @@ model Item {
   // Relations
   owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   sharedItems   SharedItem[]
+  networkId     Int
+  // Relations
+  network          Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
   bookings      Booking[]
   favoritedBy   FavoriteItem[] // Nouvelle relation
 
@@ -157,7 +161,7 @@ model SharedItem {
 
   // Relations
   item             Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  network          Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  // network          Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
 
   @@unique([itemId, networkId])
   @@map("shared_items")
