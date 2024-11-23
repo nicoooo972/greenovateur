@@ -1,0 +1,247 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum InvitationType {
+  EMAIL
+  CODE
+  LINK
+  MIXED
+}
+
+enum InvitationStatus {
+  ACTIVE
+  EXPIRED
+  USED
+  DISABLED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// Models
+model User {
+  id               Int       @id @default(autoincrement())
+  email           String    @unique
+  password        String
+  firstName       String
+  lastName        String
+  address         String?
+  rating         Float     @default(0)
+  createdAt       DateTime  @default(now())
+  lastLogin       DateTime?
+  isActive        Boolean   @default(true)
+
+  // Relations
+  items           Item[]
+  networkMembers  NetworkMember[]
+  bookings        Booking[]          @relation("Borrower")
+  createdInvites  Invitation[]       @relation("Creator")
+  joinRequests    JoinRequest[]      @relation("Requester")
+  givenRatings    Rating[]           @relation("Rater")
+  receivedRatings Rating[]           @relation("Rated")
+  sentMessages    Message[]          @relation("Sender")
+  receivedMessages Message[]         @relation("Receiver")
+  adminActions    AdminAction[]
+  createdNetworks Network[]          @relation("Creator")
+  processedRequests JoinRequest[]    @relation("Processor")
+
+  @@map("users")
+}
+
+model Network {
+  id              Int       @id @default(autoincrement())
+  name            String
+  description     String?
+  rules           String?
+  createdAt       DateTime  @default(now())
+  invitationType  InvitationType @default(CODE)
+  creatorId       Int
+  
+  // Relations
+  creator         User           @relation("Creator", fields: [creatorId], references: [id])
+  networkMembers  NetworkMember[]
+  sharedItems     SharedItem[]
+  invitations     Invitation[]
+  joinRequests    JoinRequest[]
+  messages        Message[]
+  adminActions    AdminAction[]
+  bookings        Booking[]
+
+  @@map("networks")
+}
+
+model NetworkMember {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  networkId    Int
+  role         Role     @default(MEMBER)
+  joinedAt     DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  network      Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, networkId])
+  @@map("network_members")
+}
+
+model Item {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String?
+  category      String?
+  isAvailable   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  rating        Float    @default(0)
+  ownerId       Int
+
+  // Relations
+  owner         User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sharedItems   SharedItem[]
+  bookings      Booking[]
+
+  @@map("items")
+}
+
+model SharedItem {
+  id                Int      @id @default(autoincrement())
+  itemId           Int
+  networkId        Int
+  sharedAt         DateTime @default(now())
+  isActive         Boolean  @default(true)
+  sharingConditions String?
+
+  // Relations
+  item             Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  network          Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, networkId])
+  @@map("shared_items")
+}
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  itemId        Int
+  borrowerId    Int
+  startDate     DateTime
+  endDate       DateTime
+  status        String   @default("PENDING")
+  networkId     Int
+  createdAt     DateTime @default(now())
+
+  // Relations
+  item          Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  borrower      User     @relation("Borrower", fields: [borrowerId], references: [id], onDelete: Cascade)
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  rating        Rating?
+
+  @@map("bookings")
+}
+
+model Invitation {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  networkId       Int
+  creatorId       Int
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime?
+  status          InvitationStatus @default(ACTIVE)
+  maxUses         Int?
+  usedCount       Int      @default(0)
+
+  // Relations
+  network         Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  creator         User     @relation("Creator", fields: [creatorId], references: [id])
+
+  @@map("invitations")
+}
+
+model JoinRequest {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  networkId     Int
+  message       String?
+  createdAt     DateTime @default(now())
+  status        RequestStatus @default(PENDING)
+  processedById Int?
+
+  // Relations
+  user          User     @relation("Requester", fields: [userId], references: [id], onDelete: Cascade)
+  network       Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+  processedBy   User?    @relation("Processor", fields: [processedById], references: [id])
+
+  @@map("join_requests")
+}
+
+model Rating {
+  id            Int      @id @default(autoincrement())
+  bookingId     Int      @unique
+  raterId       Int
+  ratedId       Int
+  score         Int
+  comment       String?
+  createdAt     DateTime @default(now())
+
+  // Relations
+  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  rater         User     @relation("Rater", fields: [raterId], references: [id])
+  rated         User     @relation("Rated", fields: [ratedId], references: [id])
+
+  @@map("ratings")
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  content     String
+  sentAt      DateTime @default(now())
+  isRead      Boolean  @default(false)
+  networkId   Int
+
+  // Relations
+  sender      User     @relation("Sender", fields: [senderId], references: [id])
+  receiver    User     @relation("Receiver", fields: [receiverId], references: [id])
+  network     Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model AdminAction {
+  id          Int      @id @default(autoincrement())
+  adminId     Int
+  networkId   Int
+  actionType  String
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  admin       User     @relation(fields: [adminId], references: [id])
+  network     Network  @relation(fields: [networkId], references: [id], onDelete: Cascade)
+
+  @@map("admin_actions")
+}
