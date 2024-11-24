@@ -1,38 +1,62 @@
-# sv
+# Greenovateur - Réseau de partage d'objets entre voisins
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## 📱 À propos
 
-## Creating a project
+Greenovateur est une web App développée avec SvelteKit qui permet aux résidents d'un même bâtiment de partager leurs objets peu utilisés. L'application facilite le prêt d'objets comme des imprimantes, des outils, ou du matériel de bricolage entre voisins.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## 🎯 Fonctionnalités principales
+
+- Création de réseaux locaux par bâtiment
+- Système de réservation avec plages horaires
+- Gestion des objets disponibles au prêt
+- Interface PWA accessible sur tous les appareils
+
+## 🛠️ Technologies utilisées
+
+- SvelteKit - Framework web moderne
+- Base de données - Postgresql
+- Hébergeur - Vercel
+
+## 💡 Concept
+
+1. **Création de réseau**
+   - Les utilisateurs peuvent créer ou rejoindre le réseau de leur bâtiment
+   - Vérification d'adresse pour la sécurité
+
+2. **Gestion des objets**
+   - Les prêteurs peuvent :
+     - Ajouter leurs objets disponibles
+     - Définir des plages horaires de disponibilité
+     - Gérer leurs réservations
+
+3. **Système de réservation**
+   - Consultation des objets disponibles
+   - Réservation sur les créneaux proposés
+   - Confirmation automatique
+
+## 🚀 Installation et déploiement
 
 ```bash
-# create a new project in the current directory
-npx sv create
+# Installation des dépendances
+npm install
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
+# Lancement en mode développement
 npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
+# Construction pour la production
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+## 📝 TODO
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- [ ] Système de géolocalisation pour la vérification d'adresse
+- [ ] Implémentation des notifications
+- [ ] Tests unitaires et d'intégration
+- [ ] Documentation utilisateur
+- [ ] Documentation technique
+
+##📄 Licence
+
+Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+Copyright (c) 2024 Greenovateur
