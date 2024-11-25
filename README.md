@@ -55,7 +55,7 @@ npm run build
 - [ ] Documentation utilisateur
 - [ ] Documentation technique
 
-##📄 Licence
+## 📄 Licence
 
 Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
