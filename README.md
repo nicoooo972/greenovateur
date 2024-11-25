@@ -46,15 +46,6 @@ npm run dev
 # Construction pour la production
 npm run build
 ```
-
-## 📝 TODO
-
-- [ ] Système de géolocalisation pour la vérification d'adresse
-- [ ] Implémentation des notifications
-- [ ] Tests unitaires et d'intégration
-- [ ] Documentation utilisateur
-- [ ] Documentation technique
-
 ## 📄 Licence
 
 Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
